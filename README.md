@@ -1,5 +1,5 @@
 ##Architecture design and tools development.
-![alt tag] (https://github.build.ge.com/storage/user/3387/files/070bdde2-5d79-11e6-8515-c210e659e889)
+![alt tag] (https://github.com/alfredcs/Clustering-Containerized-Service-With-Mesos-and-Docker-Overlay-Network/blob/master/dcos-mesos-docker.png)
 
 
 ##Installation:
