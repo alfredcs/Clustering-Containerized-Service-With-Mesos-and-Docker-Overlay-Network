@@ -1,0 +1,36 @@
+{
+  "id": "cirros3",
+  "cpus": 0.1,
+  "mem": 4.0,
+  "constraints": [["hostname", "UNIQUE"]],
+  "instances": 3,
+  "protocol": "tcp",
+  "labels": {
+    "HAPROXY_GROUP":"external",
+    "__HAPROXY_0_VHOST__(i.e. to fprce using tcp instead of http mode in haproxy.cfg)":"cirros.vms.crd.ge.com",
+    "HAPROXY_MODE":"tcp"
+  },
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "cirros:latest",
+      "network": "BRIDGE",
+       "type": "DOCKER",
+       "portMappings": [
+          { "containerPort": 22, "hostPort": 0, "servicePort": 60022, "protocol": "tcp" }
+       ]
+    }
+  },
+  "__cmd__": "while sleep 60; do date -u +%T; done",
+  "healthChecks": [
+        {
+	  "protocol": "TCP",
+          "portIndex": 0,
+          "path": "/",
+          "gracePeriodSeconds": 120,
+          "intervalSeconds": 60,
+          "timeoutSeconds": 5,
+          "maxConsecutiveFailures": 3
+        }
+  ]
+}

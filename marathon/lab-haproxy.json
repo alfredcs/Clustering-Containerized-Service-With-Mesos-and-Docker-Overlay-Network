@@ -1,0 +1,56 @@
+{
+  "id": "adminlb",
+  "cpus": 2,
+  "mem": 2048,
+  "constraints": [["hostname", "UNIQUE"]],
+  "instances": 1,
+  "acceptedResourceRoles": ["slave_public"],
+  "labels": {
+    "HAPROXY_GROUP":"external",
+    "HAPROXY_0_VHOST":"adminlb.vms.crd.ge.com",
+    "HAPROXY_MODE":"http"
+  },
+  "ports": [80,443,5050,8080,9090,9091],
+  "requirePorts" : true,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "dcos1-bootstrap.vms.crd.ge.com:5000/haproxy:1.67",
+      "privileged": true,
+      "parameters": [],
+      "forcePullImage": false
+    },
+    "volumes": [
+        {  "containerPath": "/etc/ssl/cert.pem", "hostPath": "/etc/ssl/cert.pem", "mode": "RO" },
+        {  "containerPath": "/usr/local/etc/haproxy/haproxy.cfg", "hostPath": "/usr/local/etc/haproxy/haproxy.cfg", "mode": "RO" },
+        {  "containerPath": "/var/run/haproxy", "hostPath": "/var/run/haproxy", "mode": "RW" },
+        {  "containerPath": "/var/state/haproxy/global", "hostPath": "/var/state/haproxy/global", "mode": "RW" }
+    ]
+  },
+  "env": {
+      "HAPROXY_SSL_CERT": "",
+      "VIP": "10.11.4.201",
+      "PRIORITY": "200",
+      "INTERFACE": "eth0",
+      "HAPROXY_SYSCTL_PARAMS": "net.ipv4.tcp_tw_reuse=1 net.ipv4.tcp_fin_timeout=30 net.ipv4.tcp_max_syn_backlog=10240 net.ipv4.tcp_max_tw_buckets=400000 net.ipv4.tcp_max_orphans=60000 net.core.somaxconn=1000"
+  },
+  "__cmd__": "while sleep 60; do date -u +%T; done",
+  "backoffSeconds": 1,
+  "backoffFactor": 1.15,
+  "maxLaunchDelaySeconds": 3600,
+  "healthChecks": [
+        {
+	  "protocol": "HTTP",
+          "portIndex": 4,
+          "path": "/monitor",
+          "gracePeriodSeconds": 60,
+          "intervalSeconds": 15,
+          "timeoutSeconds": 2,
+	  "ignoreHttp1xx": false,
+          "maxConsecutiveFailures": 3
+        }
+  ],
+  "uris": [
+        "file:///opt/nfs1/auth/docker.tar.gz"
+  ]
+}

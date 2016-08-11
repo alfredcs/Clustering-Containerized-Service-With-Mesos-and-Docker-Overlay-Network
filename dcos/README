@@ -1,0 +1,2 @@
+1) dcos_install.sh is the main installation script to stand up Mesos master, slave and slave_public
+2) dcos_cli_install.sh is for DCOS CLI installation

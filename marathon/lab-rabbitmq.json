@@ -1,0 +1,47 @@
+{
+  "id": "rabbitmq3.6",
+  "cpus": 0.5,
+  "mem": 1024,
+  "constraints": [["hostname", "UNIQUE"]],
+  "instances": 1,
+  "protocol": "tcp",
+  "labels": {
+    "HAPROXY_GROUP":"external",
+    "__HAPROXY_0_VHOST__(i.e. to fprce using tcp instead of http mode in haproxy.cfg)":"cirros.vms.crd.ge.com",
+    "HAPROXY_MODE":"tcp"
+  },
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "dcos1-bootstrap.vms.crd.ge.com:5000/rabbitmq:3.6",
+      "network": "BRIDGE",
+       "type": "DOCKER",
+       "portMappings": [
+          { "containerPort": 5672, "hostPort": 0, "servicePort": 5672, "protocol": "tcp" }
+       ]
+    },
+    "volumes": [
+          {
+		"containerPath": "/etc/docker.tar.gz",
+		"hostPath": "/opt/nfs1/docker.tar.gz",
+		"mode": "RO"
+	  }
+    ]
+  },
+  "env": {"RABBITMQ_ERLANG_COOKIE":"t0pS3cr3t", "RABBITMQ_DEFAULT_USER":"guest", "RABBITMQ_DEFAULT_PASS":"guest", "RABBITMQ_DEFAULT_VHOST":"/"},
+  "__cmd__": "while sleep 60; do date -u +%T; done",
+  "healthChecks": [
+        {
+	  "protocol": "TCP",
+          "portIndex": 0,
+          "path": "/",
+          "gracePeriodSeconds": 120,
+          "intervalSeconds": 60,
+          "timeoutSeconds": 5,
+          "maxConsecutiveFailures": 3
+        }
+  ],
+  "uris": [
+  	"file:///opt/nfs1/auth/docker.tar.gz"
+  ]
+}

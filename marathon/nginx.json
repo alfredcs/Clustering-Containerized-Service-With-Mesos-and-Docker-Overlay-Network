@@ -1,0 +1,33 @@
+{
+  "id": "nginx",
+  "cpus": 0.2,
+  "mem": 256,
+  "constraints": [["hostname", "UNIQUE"]],
+  "instances": 2,
+  "labels": {
+    "HAPROXY_GROUP":"external",
+    "HAPROXY_0_VHOST":"nginx.vms.crd.ge.com"
+  },
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "nginx:latest",
+      "network": "BRIDGE",
+       "type": "DOCKER",
+       "portMappings": [
+          { "containerPort": 80, "hostPort": 0, "servicePort": 60023, "protocol": "tcp" }
+       ]
+    }
+  },
+  "healthChecks": [
+        {
+	  "protocol": "HTTP",
+          "portIndex": 0,
+          "path": "/",
+          "gracePeriodSeconds": 120,
+          "intervalSeconds": 60,
+          "timeoutSeconds": 5,
+          "maxConsecutiveFailures": 3
+        }
+  ]
+}
